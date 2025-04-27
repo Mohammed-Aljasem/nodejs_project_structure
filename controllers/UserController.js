@@ -1,4 +1,5 @@
 const User = require('../models/UserModel');
+const Permission = require("../models/PermissionModel");
 
 class UserController {
     static async index(req, res) {
@@ -14,6 +15,17 @@ class UserController {
             if (!user) return res.status(404).json({ error: 'User not found' });
             res.json(user);
         } catch (err) {
+            res.status(500).json({ error: 'Something went wrong' });
+        }
+    }
+
+    static async name(req, res) {
+        try {
+            const userModel = new User();
+            const name = await userModel.getName(req.params.id)
+            res.json({name});
+        } catch (err) {
+            console.log(err)
             res.status(500).json({ error: 'Something went wrong' });
         }
     }

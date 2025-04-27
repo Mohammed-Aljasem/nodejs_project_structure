@@ -1,11 +1,11 @@
 const express = require('express');
 const app = express();
-const userRoutes = require('./routes/usersRoutes');
+const routes = require('./routes/routes');
 app.use(express.json());
 const mongoose = require('mongoose');
 
 // Use the user routes
-app.use('/users', userRoutes);
+app.use('/', routes);
 // Home route
 app.get('/', (req, res) => {
     res.send('Hello, World!');
