@@ -17,23 +17,14 @@ This project is a basic setup for a Node.js API using **Express** and **MongoDB*
 ### 1. Clone the Repository
 
 ```bash
-git clone https://your-repo-url.git
-cd your-project-folder
+git clone https://github.com/Mohammed-Aljasem/nodejs_project_structure.git
+cd nodejs_project_structure
 ```
 
 ### 2. Install Dependencies
 
 ```bash
 npm install
-```
-
-### 3. Environment Variables (optional)
-
-Create a `.env` file if you want to configure variables like MongoDB URL:
-
-```
-PORT=3000
-MONGO_URL=mongodb://127.0.0.1:27017/myapp_db
 ```
 
 Otherwise, the app uses default hardcoded values.
@@ -69,11 +60,14 @@ http://localhost:3000
 ## 🧹 Project Structure
 
 ```
+/schemas
+  UserSchema.js         # Mongoose schemas for users
+
 /models
-  User.js         # Mongoose model for users
+  UserModel.js         # Mongoose model for users
 
 /routes
-  users.js        # API routes for users
+  userRoutes.js        # API routes for users
 
 index.js          # Main server file (entry point)
 package.json      # Node.js configuration
@@ -83,13 +77,13 @@ package.json      # Node.js configuration
 
 ## 🔪 API Endpoints
 
-| Method  | URL               | Description               |
-|---------|-------------------|----------------------------|
-| GET     | `/users`          | Get all users              |
-| GET     | `/users/:id`      | Get a single user by ID     |
-| POST    | `/users`          | Create a new user          |
-| PUT     | `/users/:id`      | Update user by ID          |
-| DELETE  | `/users/:id`      | Delete user by ID          |
+| Method  | URL                 | Description               |
+|---------|---------------------|----------------------------|
+| GET     | `/users`            | Get all users              |
+| GET     | `/users/:id`        | Get a single user by ID     |
+| POST    | `/users/create`     | Create a new user          |
+| PUT     | `/users/update/:id` | Update user by ID          |
+| DELETE  | `/users/delete/:id` | Delete user by ID          |
 
 ### Example Request (Create User)
 
@@ -120,15 +114,15 @@ curl -X POST http://localhost:3000/users \
 
 ## ❤️ Author
 
-Built with love by **Joy**  
+Built with love by **Mohammed Aljasem**  
 _Always learning, always building._
 
 ---
 
-# ✨ Future Enhancements (optional)
+# ✨ Future Enhancements
 
 - Add environment variables using `.env`
 - Add authentication (JWT)
 - Add soft deletes
 - Add pagination and filtering
-- Deploy to cloud platforms (e.g., Vercel, Render)
+- Deploy to cloud platforms
