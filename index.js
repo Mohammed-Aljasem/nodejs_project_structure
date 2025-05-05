@@ -15,7 +15,7 @@ i18next
         fallbackLng: 'en',
         preload: ['en', 'ar'], // preload all supported languages
         backend: {
-            loadPath: path.join(__dirname, 'locales/{{lng}}/translations.json')
+            loadPath: path.join(__dirname, 'locales/{{lng}}.json')
         }
     });
 

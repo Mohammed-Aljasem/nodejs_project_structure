@@ -36,7 +36,7 @@ class ProductController {
         productData.image = fileName
         const productModel = new Product()
         await productModel.create(productData)
-        return res.status(201).json({message: req.t('product_created'), product: req.body});
+        return res.status(201).json({message: req.t('product_created', {name: req.body.name}), product: req.body});
     }
 
     static async update(req, res) {
