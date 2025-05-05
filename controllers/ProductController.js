@@ -1,6 +1,5 @@
 const Product = require('../models/ProductModel');
 const resizeImage = require('../helpers/resizeImages');
-const translation = require('../helpers/translation');
 
 class ProductController {
     static async index(req, res) {
@@ -34,11 +33,10 @@ class ProductController {
     static async create(req, res) {
         const productData = req.body;
         const fileName = await resizeImage(req.file.buffer, 'avatars')
-        const language = req.headers['accept-language']
         productData.image = fileName
         const productModel = new Product()
         await productModel.create(productData)
-        return res.status(201).json({message: translation(language, 'product_created'), product: req.body});
+        return res.status(201).json({message: req.t('product_created'), product: req.body});
     }
 
     static async update(req, res) {
