@@ -1,5 +1,3 @@
-const User = require("../schemas/UserSchema");
-
 class BaseModel {
     constructor(schema) {
         this.modelSchema = schema;
@@ -30,6 +28,14 @@ class BaseModel {
     async getName(id){
         const model =  await this.findOne(id);
         return model.name;
+    }
+
+    async where(key, value){
+        return this.modelSchema.find({[key]: value}).sort({name: 'asc'}).exec()
+    }
+
+    async whereMore(obj){
+        return this.modelSchema.find(obj).exec();
     }
 }
 

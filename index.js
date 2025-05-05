@@ -1,19 +1,19 @@
 const express = require('express');
 const app = express();
 const routes = require('./routes/routes');
-app.use(express.json());
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const path = require("path");
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
-// Use the user routes
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/', routes);
 // Home route
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
-mongoose.connect('mongodb://127.0.0.1:27017/myapp_db', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect('mongodb://127.0.0.1:27017/myapp_db', )
     .then(() => {
         console.log('✅ Connected to MongoDB');
 

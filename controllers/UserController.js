@@ -1,5 +1,5 @@
 const User = require('../models/UserModel');
-const Permission = require("../models/PermissionModel");
+const AdminUser = require('../models/AdminUserModel');
 
 class UserController {
     static async index(req, res) {
@@ -53,6 +53,17 @@ class UserController {
             res.json({ message: 'User deleted successfully' });
         } catch (err) {
             res.status(500).json({ error: 'Failed to delete user' });
+        }
+    }
+
+    static async getAdminName(req, res) {
+        try {
+            const adminUserModel = new AdminUser();
+            const name = await adminUserModel.getName(req.params.id)
+            res.json({name});
+        } catch (err) {
+            console.log(err)
+            res.status(500).json({ error: 'Something went wrong' });
         }
     }
 }

@@ -2,7 +2,7 @@ const PermissionModel = require('../models/PermissionModel');
 const RoleEnum = require('../enums/RoleEnum');
 
 const checkPermissionMiddleware = (route_name) => async (req, res, next) => {
-    const role = req.headers['role'];
+    const role = req.headers['role']; // admin , power_admin
     if(role === RoleEnum.SUPER_ADMIN){
         return next()
     }
@@ -12,6 +12,7 @@ const checkPermissionMiddleware = (route_name) => async (req, res, next) => {
     const hasPermission = rolePermissions.filter((permission)=> {
         return permission.key == route_name;
     })
+    req.role = role;
     if(hasPermission.length){
        return next();
     }
