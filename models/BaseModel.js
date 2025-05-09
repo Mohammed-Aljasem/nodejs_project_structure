@@ -31,7 +31,7 @@ class BaseModel {
     }
 
     async where(key, value){
-        return this.modelSchema.find({[key]: value}).sort({name: 'asc'}).exec()
+        return this.modelSchema.find({[key]: value}).exec()
     }
 
     async whereMore(obj){
