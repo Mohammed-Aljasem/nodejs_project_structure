@@ -1,9 +1,11 @@
 const express = require('express');
 const UserController = require("../controllers/UserController");
 const AuthController = require("../controllers/AuthController");
+const ChatController = require("../controllers/ChatController");
 const PermissionController = require("../controllers/PermissionController");
 const ProductController = require("../controllers/ProductController");
 const checkPermissionMiddleware = require("../middlewares/checkPermissionMiddleware");
+const xssCleanMiddleware = require("../middlewares/xssCleanMiddleware");
 const auth = require('../middlewares/authMiddleware');
 const upload = require("../helpers/uploadFiles");
 const router = express.Router();
@@ -11,12 +13,14 @@ const router = express.Router();
 router.post('/login/', AuthController.login);
 router.post('/register/', AuthController.register);
 
+router.get('/chat/', ChatController.chat);
+
 //user routes
 router.get('/users/', auth, checkPermissionMiddleware('user_list'), UserController.index);
 router.get('/users/get_name/:id', auth, checkPermissionMiddleware('user_name'), UserController.name);
 router.get('/users/get_admin_name/:id', auth, checkPermissionMiddleware('user_name'), UserController.getAdminName);
 router.get('/users/:id', auth, checkPermissionMiddleware('user_view'),UserController.view);
-router.post('/users/create', auth, checkPermissionMiddleware('user_create'),UserController.create);
+router.post('/users/create', auth, xssCleanMiddleware, checkPermissionMiddleware('user_create'),UserController.create);
 router.put('/users/update/:id', auth, checkPermissionMiddleware('user_update'), UserController.update);
 router.delete('/users/delete/:id', auth, checkPermissionMiddleware('user_delete'), UserController.delete);
 

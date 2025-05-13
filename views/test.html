@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body id="body">
+<p>Hello from here </p>
+<h3>Users List:</h3>
+<ul id="users_list">
+
+</ul>
+<script>
+  const token= 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1vaC5tLmFsamFzZW1AZ21haWwuY29tIiwiaWQiOiI2ODFlN2U2MWIzNzYxOGU2MTQ4NWVlZWMiLCJpYXQiOjE3NDY5ODM1MjIsImV4cCI6MTc0Njk4NzEyMn0.kEu_brpEPvv6qNOKoGigbEb8QUS4_XA5EP2c99U-1oU';
+
+      fetch('http://localhost:3000/users',  {
+          headers: {Authorization: `Bearer ${token}`, role: 'super_admin'}
+      }).then(function (response) {
+          return response.json();
+      }).then(function (data) {
+
+          const users_list = document.getElementById('users_list');
+          data.map((user)=>{
+              const para = document.createElement("li");
+              para.innerHTML = user.name;
+              users_list.appendChild(para);
+          })
+      }).catch(function (err) {
+          // There was an error
+          console.warn('Something went wrong.', err);
+      });
+
+</script>
+</body>
+</html>

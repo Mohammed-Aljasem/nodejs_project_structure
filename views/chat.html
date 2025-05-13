@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat App</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        /* Overlay */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        /* Popup container */
+        .popup-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            max-width: 500px;
+            width: 90%;
+            animation: popupSlide 0.3s ease-out;
+        }
+
+        /* Close button */
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #666;
+            transition: color 0.2s;
+        }
+
+        .popup-close:hover {
+            color: #333;
+        }
+
+        /* Popup content styling */
+        .popup-content {
+            margin: 20px 0;
+            line-height: 1.5;
+            color: #444;
+        }
+
+        /* Confirm button */
+        .popup-confirm {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .popup-confirm:hover {
+            background-color: #45a049;
+        }
+
+        /* Animation */
+        @keyframes popupSlide {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<h2>Socket Chat</h2>
+<h3>Users Online</h3>
+<ul id="list_users_online">
+
+</ul>
+<input id="msg" placeholder="Type your message..." />
+<input id="send_to" type="hidden" />
+<button onclick="sendMessage()">Send</button>
+<ul id="messages"></ul>
+<div class="popup-overlay" id="popupOverlay">
+    <div class="popup-container">
+<!--        <span class="popup-close" onclick="closePopup()">&times;</span>-->
+        <h2>please login to send a message</h2>
+        <div class="popup-content">
+            <input id="email" required placeholder="Type your username..." />
+            <input id="password" required placeholder="Type your password..." />
+        </div>
+        <button class="popup-confirm" onclick="login()">Log In!</button>
+    </div>
+</div>
+<script>
+    const socket = io();
+    const users = {}; // { username: socket.id }
+    addEventListener("DOMContentLoaded", (event) => {
+        const token = getToken();
+        if(!token){
+            openPopup()
+            return;
+        }
+
+        socket.emit('register', {
+            token,
+        });
+    })
+
+
+    const messages = document.getElementById('messages');
+
+    socket.on('message', function (data){
+        const li = document.createElement('li');
+        li.textContent = `${data.username}: ${data.message}`;
+        messages.appendChild(li)
+    });
+   socket.on('private_message', function (data){
+        const li = document.createElement('li');
+        li.textContent = `${data.send_from}: ${data.message}`;
+        messages.appendChild(li)
+    });
+
+    socket.on('online_users', function (data){
+        messages.innerHTML = '';
+        const users = Object.values(data)
+        users.map((user)=> {
+            const li = document.createElement('li');
+            if(socket.id == user.socket_id){
+                sessionStorage.setItem('my_user', JSON.stringify(user))
+                return
+            }
+
+            li.innerHTML = `
+                    <input type="radio" id="${user.username}" name="fav_language" class="radio_user" value="${user.socket_id}">
+                    <label for="${user.username}"><img style="height: 50px; width: 50px" src="${user.avatar}" /> <p>${user.name}</p></label>
+                    `;
+            messages.appendChild(li)
+        })
+    });
+    function login(){
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const raw = JSON.stringify({
+            "email": email.value,
+            "password": password.value
+        });
+
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+            redirect: "follow"
+        };
+
+        fetch("http://localhost:3000/login", requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+                sessionStorage.setItem('token', result.token);
+                closePopup();
+                socket.emit('register', {
+                    token,
+                });
+            })
+            .catch((error) => console.error(error));
+    }
+
+    function sendMessage(){
+        const token = getToken();
+        if(!token){
+            openPopup()
+        }
+        const selected = document.querySelector('.radio_user:checked');
+        let sendTo = selected?.value;
+        if (!sendTo) {
+            sendTo = null;
+        }
+        const input = document.getElementById('msg');
+        const message = input.value;
+        const my_userString = sessionStorage.getItem('my_user')
+        const myUser = JSON.parse(my_userString);
+        socket.emit('private_message', {
+            send_to: sendTo,
+            send_from: myUser.username,
+            message,
+        });
+        input.value = ''
+    }
+
+    const getToken = () => {
+        return sessionStorage.getItem('token');
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function openPopup() {
+        document.getElementById('popupOverlay').style.display = 'flex';
+    }
+
+    // Close popup
+    function closePopup() {
+        document.getElementById('popupOverlay').style.display = 'none';
+    }
+
+    // Close when clicking outside
+    document.getElementById('popupOverlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePopup();
+        }
+    });
+
+
+
+    // Close with ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closePopup();
+        }
+    });
+</script>
+</body>
+</html>

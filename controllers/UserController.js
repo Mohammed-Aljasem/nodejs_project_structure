@@ -32,6 +32,7 @@ class UserController {
 
     static async create(req, res) {
         const userModel = new User()
+        console.log(req.body)
         await userModel.create(req.body)
         return res.status(201).json({message: 'User created', user: req.body});
     }
