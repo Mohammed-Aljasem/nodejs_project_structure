@@ -52,16 +52,16 @@ var whitelist = ['http://localhost:3000', 'http://localhost:63343']
 
 app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    // origin: "http://localhost:3000"
-    origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-        } else {
-            callback(new Error('Not allowed by CORS'))
-        }
-    }
+    origin: "*"
+    // origin: function (origin, callback) {
+    //     if (!origin) return callback(null, true);
+    //
+    //     if (whitelist.indexOf(origin) !== -1) {
+    //         callback(null, true)
+    //     } else {
+    //         callback(new Error('Not allowed by CORS'))
+    //     }
+    // }
 }))
 
 const apiLimiter = rateLimit({

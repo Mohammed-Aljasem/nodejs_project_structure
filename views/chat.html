@@ -165,7 +165,7 @@
             redirect: "follow"
         };
 
-        fetch("http://localhost:3000/login", requestOptions)
+        fetch(`http://${window.location.host}/login`, requestOptions)
             .then((response) => response.json())
             .then((result) => {
                 sessionStorage.setItem('token', result.token);
