@@ -103,7 +103,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/myapp_db', )
         console.log('✅ Connected to MongoDB');
 
         // Start the server *after* successful DB connection
-        const PORT = 3000;
+        const PORT = process.env.PORT || 3000;
         server.listen(PORT, () => {
             console.log(`🚀 Server is running on http://localhost:${PORT}`);
         });
