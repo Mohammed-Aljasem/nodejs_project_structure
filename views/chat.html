@@ -104,7 +104,6 @@
 </div>
 <script>
     const socket = io();
-    const users = {}; // { username: socket.id }
     addEventListener("DOMContentLoaded", (event) => {
         const token = getToken();
         if(!token){
@@ -136,6 +135,7 @@
         const users = Object.values(data)
         users.map((user)=> {
             const li = document.createElement('li');
+            console.log(user)
             if(socket.id == user.socket_id){
                 localStorage.setItem('my_user', JSON.stringify(user))
                 return
