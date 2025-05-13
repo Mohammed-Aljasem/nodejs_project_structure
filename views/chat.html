@@ -137,7 +137,7 @@
         users.map((user)=> {
             const li = document.createElement('li');
             if(socket.id == user.socket_id){
-                sessionStorage.setItem('my_user', JSON.stringify(user))
+                localStorage.setItem('my_user', JSON.stringify(user))
                 return
             }
 
@@ -168,7 +168,7 @@
         fetch(`http://${window.location.host}/login`, requestOptions)
             .then((response) => response.json())
             .then((result) => {
-                sessionStorage.setItem('token', result.token);
+                localStorage.setItem('token', result.token);
                 closePopup();
                 socket.emit('register', {
                     token,
@@ -189,7 +189,7 @@
         }
         const input = document.getElementById('msg');
         const message = input.value;
-        const my_userString = sessionStorage.getItem('my_user')
+        const my_userString = localStorage.getItem('my_user')
         const myUser = JSON.parse(my_userString);
         socket.emit('private_message', {
             send_to: sendTo,
@@ -200,7 +200,7 @@
     }
 
     const getToken = () => {
-        return sessionStorage.getItem('token');
+        return localStorage.getItem('token');
     }
 
 
